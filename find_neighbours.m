@@ -1,13 +1,12 @@
-function  [ vector  ] =find_neighbours(source1,accRange, numNodes,nodePositions)
-k=0;
+function  [ vector  ] =find_neighbours(source,accRange, numNodes,nodePositions)
 vector = [];
 index = 1;
 for i=1: numNodes
    
     % copy x/y/z co-ordinates of souce
-    sx=nodePositions(source1,1);
-    sy=nodePositions(source1,2);
-    sz=nodePositions(source1,3);
+    sx=nodePositions(source,1);
+    sy=nodePositions(source,2);
+    sz=nodePositions(source,3);
     
     % Copy x/y/z co-ordinates of neighbor
     x=nodePositions(i,1);

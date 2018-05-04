@@ -2,7 +2,7 @@ clc;
 close all;
 
 % Number of underwater sensor nodes
-numNodes = 100;
+numNodes = 24;
 % Acoustic communication range of sensor
 accRange=50;
 % Sink Co-ordinates, sink present in water surface so z co-ordinate is 0.
@@ -44,7 +44,7 @@ end
   %  nodePositions(i,2) = (rand) * (max_y);
 %end
 
-n1=input('Please enter the source node = ');
+n1=input('Please enter the source node  = ');
 % Plot 3-D of all nodes
 plot3(nodePositions(:, 1), nodePositions(:, 2),nodePositions(:, 3), '+', ...
     'MarkerSize',15);
@@ -52,13 +52,14 @@ hold on
 plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
 
 
-%find the neighbour node from source
-neigh = find_neighbours(n1,accRange, numNodes,nodePositions);
+%find the neighbour nodes from source
+neighbours = find_neighbours(n1,accRange, numNodes,nodePositions);
 
 % find total number of neighbours
-totalNeighbours=numel(neigh);
+totalNeighbours=numel(neighbours);
 
-%list_of_nodes=find_next_hops(n1, nodePositions);
+
+list_of_nodes=find_next_hop(n1,sink, neighbours, nodePositions);
 
 
 

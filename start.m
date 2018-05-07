@@ -5,6 +5,7 @@ close all;
 numNodes = 24;
 % Acoustic communication range of sensor
 accRange=50;
+succ = 0;
 % Sink Co-ordinates, sink present in water surface so z co-ordinate is 0.
 sink(1,1)=50 ;
 sink(1,2) = 50;
@@ -53,12 +54,13 @@ plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
 
 
 %find the neighbour nodes from source
-neighbours = find_neighbours(n1,accRange, numNodes,nodePositions);
-
+[neighbours ,succ]  = find_neighbours(n1,sink,accRange,numNodes,nodePositions)
+if(succ == 1)
+    disp('packet routed succesfully');
+end
+    
 % find total number of neighbours
 totalNeighbours=numel(neighbours);
-
-
 list_of_nodes=find_next_hop(n1,sink, neighbours, nodePositions);
 
 

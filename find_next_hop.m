@@ -1,10 +1,10 @@
 % fn. to find the next hop nearest hop to destination
-function min_hop =find_next_hop(source, sink ,neighbours, nodePositions)
-
+function [ min_hop, void ]  =find_next_hop(forwarder, sink ,neighbours, nodePositions)
+ void=0;
 % copy x/y/z co-ordinates of souce
- sx=nodePositions(source,1);
- sy=nodePositions(source,2);
- sz=nodePositions(source,3);
+ sx=nodePositions(forwarder,1);
+ sy=nodePositions(forwarder,2);
+ sz=nodePositions(forwarder,3);
  
  % Copy the coordinates of sink
  dx=sink(1);
@@ -12,7 +12,7 @@ function min_hop =find_next_hop(source, sink ,neighbours, nodePositions)
  dz=sink(3);
  
 % find distance between source to sink node
- distance_source_sink= sqrt((sx-dx)^2 + (sy-dy)^2 + (sz-dz)^2);
+ distance_forwarder_sink= sqrt((sx-dx)^2 + (sy-dy)^2 + (sz-dz)^2);
  
  totalNeighbours=numel(neighbours);
  neighbour_to_sink= zeros(totalNeighbours, 1);
@@ -29,13 +29,16 @@ function min_hop =find_next_hop(source, sink ,neighbours, nodePositions)
      % find the node having MINIMUM distance to sink
      [M, I] =min(neighbour_to_sink(:,2));
      min_neighbour_sink= M;
-     min_hop= neighbour_to_sink(I,1)
+     min_hop= neighbour_to_sink(I,1);
       
-      if(distance_source_sink < min_neighbour_sink)
-          disp('No node found with shorter distance than forwarding node');
+      if(distance_forwarder_sink < min_neighbour_sink)
+          void=1;
           disp('FOUND VOID NODE: GREEDY FORWARDING TERMINATED');
+          msg=sprintf('VOID NODE IS: %d', min_hop);
+          disp(msg);
+          return;
       end
-      msg=sprintf(' next nearest hop will be %d', min_hop);
+      msg=sprintf('  %d --->', min_hop);
       disp(msg);
 end
 

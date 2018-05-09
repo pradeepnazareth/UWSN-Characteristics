@@ -1,8 +1,10 @@
 clc;
+clear all;
 close all;
+index=1;
 
 % Number of underwater sensor nodes
-numNodes = 24;
+numNodes = 100;
 % Acoustic communication range of sensor
 accRange=50;
 succ = 0;
@@ -19,7 +21,7 @@ min_z=0;
 % Min range of x,y,z
 max_x=100;
 max_y=100;
-max_z=-100;
+max_z=-300;
 
 nodePositions = zeros(numNodes,3);
 
@@ -45,23 +47,34 @@ end
   %  nodePositions(i,2) = (rand) * (max_y);
 %end
 
-n1=input('Please enter the source node  = ');
+source=input('Please enter the source node  = ');
+forwarder=source;
 % Plot 3-D of all nodes
 plot3(nodePositions(:, 1), nodePositions(:, 2),nodePositions(:, 3), '+', ...
     'MarkerSize',15);
 hold on
 plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
 
-
-%find the neighbour nodes from source
-[neighbours ,succ]  = find_neighbours(n1,sink,accRange,numNodes,nodePositions)
+% Untill reach destination
+while ( succ == 0)
+%find the neighbour nodes from forwarder
+[neighbours ,succ]  = find_neighbours(forwarder,sink,accRange,numNodes,nodePositions);
 if(succ == 1)
+    disp('---> sink');
     disp('packet routed succesfully');
+    return;
 end
     
 % find total number of neighbours
 totalNeighbours=numel(neighbours);
-list_of_nodes=find_next_hop(n1,sink, neighbours, nodePositions);
+[min_hop, void] =find_next_hop(forwarder,sink, neighbours, nodePositions);
+list_of_nodes(index)=min_hop;
+index = index +1;
+forwarder=min_hop;
+if (void==1)
+     disp('FOUND VOID NODE: GREEDY FORWARDING TERMINATED');
+     return;
+end
 
-
+end
 

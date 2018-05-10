@@ -4,7 +4,7 @@ close all;
 index=1;
 
 % Number of underwater sensor nodes
-numNodes = 100;
+numNodes = 10;
 % Acoustic communication range of sensor
 accRange=50;
 succ = 0;
@@ -67,6 +67,10 @@ end
     
 % find total number of neighbours
 totalNeighbours=numel(neighbours);
+if(totalNeighbours==0)
+    disp('NO NEIGHBOURS');
+    return;
+end
 [min_hop, void] =find_next_hop(forwarder,sink, neighbours, nodePositions);
 list_of_nodes(index)=min_hop;
 index = index +1;

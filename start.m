@@ -4,10 +4,13 @@ close all;
 index=1;
 
 % Number of underwater sensor nodes
-numNodes = 10;
+numNodes = 100;
 % Acoustic communication range of sensor
 accRange=50;
+% Packet reached sink
 succ = 0;
+%Max Prop delay
+delay = 0;
 % Sink Co-ordinates, sink present in water surface so z co-ordinate is 0.
 sink(1,1)=50 ;
 sink(1,2) = 50;
@@ -56,12 +59,16 @@ hold on
 plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
 
 % Untill reach destination
+
+
 while ( succ == 0)
 %find the neighbour nodes from forwarder
 [neighbours ,succ]  = find_neighbours(forwarder,sink,accRange,numNodes,nodePositions);
 if(succ == 1)
+    delay= delay +0.2
     disp('---> sink');
     disp('packet routed succesfully');
+    disp(delay);
     return;
 end
     
@@ -71,14 +78,17 @@ if(totalNeighbours==0)
     disp('NO NEIGHBOURS');
     return;
 end
-[min_hop, void] =find_next_hop(forwarder,sink, neighbours, nodePositions);
+[min_hop, void ] = find_next_hop(forwarder,sink, neighbours, nodePositions);
 list_of_nodes(index)=min_hop;
 index = index +1;
 forwarder=min_hop;
+delay = delay + 0.2;
+
 if (void==1)
      disp('FOUND VOID NODE: GREEDY FORWARDING TERMINATED');
-     return;
+    return;
 end
 
 end
+
 

@@ -1,5 +1,5 @@
 % fn. to find the next hop nearest hop to destination
-function [ min_hop, void ]  =find_next_hop(forwarder, sink ,neighbours, nodePositions)
+function [ min_hop, void , delay]  =find_next_hop(forwarder, sink ,neighbours, nodePositions)
  void=0;
 % copy x/y/z co-ordinates of souce
  sx=nodePositions(forwarder,1);
@@ -30,7 +30,7 @@ function [ min_hop, void ]  =find_next_hop(forwarder, sink ,neighbours, nodePosi
      [M, I] =min(neighbour_to_sink(:,2));
      min_neighbour_sink= M;
      min_hop= neighbour_to_sink(I,1);
-      
+          
       if(distance_forwarder_sink < min_neighbour_sink)
           void=1;
           %disp('FOUND VOID NODE: GREEDY FORWARDING TERMINATED');

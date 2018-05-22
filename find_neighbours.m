@@ -1,7 +1,7 @@
-function   [neighbours , succ] = find_neighbours(forwarder,sink, accRange,...
-    numNodes,nodePositions)
+function   [neighbours , succ] = find_neighbours(i, forwarder,sink, accRange,...
+    numNodes,nodePositions, succ)
 k=0;
-succ=0;
+succ(i,1)=0;
 neighbours = [];
 index = 1;
 % copy x/y/z co-ordinates of forwarding node
@@ -19,7 +19,7 @@ index = 1;
 
  % If sink is a neighbour, packets can send to sink Succesfuly
  if( dst_sink <= accRange)
-     succ=1;
+     succ(i,1)=1;
      return;
  end
  

@@ -34,8 +34,8 @@ function [ min_hop, void , delay]  =find_next_hop(forwarder, sink ,neighbours, n
       if(distance_forwarder_sink < min_neighbour_sink)
           void=1;
           %disp('FOUND VOID NODE: GREEDY FORWARDING TERMINATED');
-          msg=sprintf('VOID NODE IS: %d', min_hop);
-          disp(msg);
+          %msg=sprintf('VOID NODE IS: %d', min_hop);
+         % disp(msg);
           return;
       end
       msg=sprintf('  %d --->', min_hop);

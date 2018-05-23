@@ -1,10 +1,11 @@
 clc;
 clear all;
 close all;
-index=1;
 
 
-count = 0;
+
+
+count = 0
 
 % Number of underwater sensor nodes
 numNodes = 125;
@@ -14,6 +15,8 @@ accRange=250;
 
 % Packet reached sink
 succ=zeros(numNodes,1);
+
+neighbour_to_sink_dis= zeros(numNodes,numNodes)
 
 %Max Prop delay
 delay = 0.2;
@@ -69,48 +72,56 @@ plot3(nodePositions(:, 1), nodePositions(:, 2),nodePositions(:, 3), '+', ...
 hold on
 plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
 
+neighbour=zeros(numNodes,numNodes);
+void_nodes=  zeros(numNodes);
 
-for i=1:125
-    forwarder=i
+ for i=1:numNodes
+       
+ [neighbour,neighbour_to_sink_dis ]= find_void(i,sink,numNodes,nodePositions,...
+     accRange, neighbour, void_nodes,neighbour_to_sink_dis);
+ count = count +1;
+ 
+    
+ end
+
+    
+    
+    
+    
 % Untill reach destination
-while ( succ(i) == 0)
+%while ( succ(i) == 0)
     
 %find the neighbour nodes from forwarder
-[neighbours ,succ]  = find_neighbours(i,forwarder,sink,accRange,numNodes,nodePositions, succ);
+%[neighbours ,succ]  = find_neighbours(i,forwarder,sink,accRange,numNodes,nodePositions, succ);
 
-if(succ(i,1) == 1)
-    %disp('---> sink');
-    %delay= delay +0.2
-    
-    %disp('packet routed succesfully');
-    %disp(delay);
-    count =count +1;
-     continue;
+%if(succ(i,1) == 1)
+  %    count =count +1;
+ %     continue;
    % return;
    %succ=0;
-end
+%end
     
 % find total number of neighbours
-totalNeighbours=numel(neighbours);
-if(totalNeighbours==0)
-    disp('NO NEIGHBOURS');
+%totalNeighbours=numel(neighbours);
+%if(totalNeighbours==0)
+ %   disp('NO NEIGHBOURS');
     %return;
-    continue;
-end
-[min_hop, void ] = find_next_hop(forwarder,sink, neighbours, nodePositions);
-list_of_nodes(index)=min_hop;
-index = index +1;
-forwarder=min_hop;
-delay = delay + 0.2;
+  %  continue;
+%end
+%[min_hop, void ] = find_next_hop(forwarder,sink, neighbours, nodePositions);
+%list_of_nodes(index)=min_hop;
+%index = index +1;
+%forwarder=min_hop;
+%delay = delay + 0.2;
 
-if (void==1)
+%if (void==1)
     % disp('FOUND VOID NODE: GREEDY FORWARDING TERMINATED');
-   void =void +1;
+ %  void =void +1;
      %return;
-end
+%end
 
-end
+%end
 
-end
-fprintf('number of non-voidnodes are %d .\n',count);
-
+%end
+%fprintf('number of non-voidnodes are %d .\n',count);
+% }

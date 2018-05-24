@@ -2,19 +2,19 @@ clc;
 clear all;
 close all;
 
-
-
-
-count = 0
-
+for t=1:8
+    void = zeros(8,1);
 % Number of underwater sensor nodes
-numNodes = 125;
-
+numNodes = t*t *t;
+dst=zeros(numNodes,2);
 % Acoustic communication range of sensor
 accRange=250;
 
-% Packet reached sink
-succ=zeros(numNodes,1);
+% To keep track of void nodes
+void_nodes = zeros(numNodes,1);
+
+%Count void node
+void_count = 0;
 
 neighbour_to_sink_dis= zeros(numNodes,numNodes)
 
@@ -42,7 +42,7 @@ x= floor(root);
 y= floor(root);
 z= floor(root);
 
-m= x*y*z;
+m=x*y*z;
 
 x_segment=max_x/x;
 y_segment=max_y/y;
@@ -53,9 +53,7 @@ nodePositions= zeros(m,3);
 
 for i=0 :x_segment: (max_x-1)
       for j=0 :y_segment: (max_y-1)
-        for k=0:z_segment: (max_z-1)
-           
-           
+        for k=0:z_segment: (max_z-1)                  
              nodePositions(n,1) = (rand) * (x_segment)+i
              nodePositions(n,2) = (rand) * (y_segment)+j
              nodePositions(n,3) = (rand) * (z_segment)+k
@@ -77,14 +75,12 @@ void_nodes=  zeros(numNodes);
 
  for i=1:numNodes
        
- [neighbour,neighbour_to_sink_dis ]= find_void(i,sink,numNodes,nodePositions,...
-     accRange, neighbour, void_nodes,neighbour_to_sink_dis);
- count = count +1;
- 
-    
+ [neighbour, neighbour_to_sink_dis, void_nodes, void_count, dst ]= find_void(i,sink,numNodes,nodePositions,...
+     accRange, neighbour, void_nodes,neighbour_to_sink_dis, void_count, dst);
+     
  end
-
-    
+ void(t)= void_count;
+end  
     
     
     

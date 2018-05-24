@@ -1,10 +1,9 @@
-function [neighbour, neighbour_to_sink_dis] = find_void(node,sink,numNodes,nodePositions,...
-              accRange,neighbour,void_nodes, neighbour_to_sink_dis)
-
+function [neighbour, neighbour_to_sink_dis, void_nodes, void_count , dst] = find_void(node,sink,...
+    numNodes,nodePositions,accRange,neighbour, void_nodes, neighbour_to_sink_dis, void_count,dst)
 index =1;
 
  % Copy x/y/z co-ordinates of forwarding node
- node_x=nodePositions(node,1);
+ node_x=nodePositions(node,1); 
  node_y=nodePositions(node,2);
  node_z=nodePositions(node,3);
  
@@ -15,7 +14,7 @@ index =1;
  
  % find the distance between node and sink
  dst_sink = sqrt((node_x- sink_x)^2 + (node_y- sink_y)^2 + (node_z- sink_z)^2);
-
+ dst(node,1)=dst_sink;
 % code to find neighbours for a given node
  for i=1: numNodes
     if (node == i)
@@ -26,7 +25,8 @@ index =1;
     x=nodePositions(i,1);
     y=nodePositions(i,2);
     z= nodePositions(i,3);
-           
+    
+    % find neighbours
     distance = sqrt((node_x-x)^2 + (node_y-y)^2 + (node_z-z)^2);
     if ( distance <=  accRange)              
         neighbour(node,index)=i;
@@ -42,10 +42,22 @@ index =1;
     nx= nodePositions(neighbouring_node,1)
     ny= nodePositions(neighbouring_node,2)
     nz= nodePositions(neighbouring_node,3)
-    dst_sink = sqrt((nx- sink_x)^2 + (ny- sink_y)^2 + (nz- sink_z)^2);
-    neighbour_to_sink_dis(node,i)=dst_sink;
+    dst_neighbour_sink = sqrt((nx- sink_x)^2 + (ny- sink_y)^2 + (nz- sink_z)^2);
+    neighbour_to_sink_dis(node,i)=dst_neighbour_sink;
   end
-    
+   % distance 0 means, other nodes are reachable so set to maximum like
+   % 9999
+   neighbour_to_sink_dis(neighbour_to_sink_dis ==0) = 9999
+   [M, I] =min(neighbour_to_sink_dis(node,:));
+     min_neighbour_sink= M;
+     dst(node,2)=min_neighbour_sink;
+     min_hop= neighbour(node,I);
+     
+       
+     if (( dst_sink < min_neighbour_sink) && (dst_sink > accRange))
+             void_nodes(node,1)=1;
+             void_count = void_count+1;
+     end
     
     
  

@@ -1,11 +1,13 @@
 clc;
 clear all;
 close all;
-
+void = zeros(8,2);
 for t=1:8
-    void = zeros(8,1);
+   
+    
 % Number of underwater sensor nodes
 numNodes = t*t *t;
+void(t,1)=numNodes;
 dst=zeros(numNodes,2);
 % Acoustic communication range of sensor
 accRange=250;
@@ -79,8 +81,9 @@ void_nodes=  zeros(numNodes);
      accRange, neighbour, void_nodes,neighbour_to_sink_dis, void_count, dst);
      
  end
- void(t)= void_count;
-end  
+ void(t,2)= void_count;
+end
+
     
     
     

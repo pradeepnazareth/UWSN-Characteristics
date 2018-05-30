@@ -1,8 +1,8 @@
 clc;
 clear all;
 close all;
-void = zeros(8,2);
-for t=1:8
+void = zeros(10,3);
+for t=1:10
    
     
 % Number of underwater sensor nodes
@@ -82,9 +82,18 @@ void_nodes=  zeros(numNodes);
      
  end
  void(t,2)= void_count;
+ void(t,3)=void(t,2)/void(t,1);
 end
 
-    
+figure;
+t=1:1:10;
+plot(void(t,1),void(t,3),'m');
+grid on;
+xlabel('Number of nodes')
+ylabel('Fraction of void nodes')   
+
+
+
     
     
 % Untill reach destination

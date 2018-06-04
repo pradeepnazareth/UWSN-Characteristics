@@ -1,100 +1,116 @@
 clc;
 clear all;
 close all;
-void = zeros(10,3);
-for t=1:10
-   
-    
-% Number of underwater sensor nodes
-numNodes = t*t *t;
-void(t,1)=numNodes;
-dst=zeros(numNodes,2);
-% Acoustic communication range of sensor
-accRange=250;
 
-% To keep track of void nodes
-void_nodes = zeros(numNodes,1);
+%Number of nodes---CAN BE CHANGED
+numNodes= 100;
 
-%Count void node
-void_count = 0;
-
-neighbour_to_sink_dis= zeros(numNodes,numNodes)
-
-%Max Prop delay
-delay = 0.2;
-% Sink Co-ordinates, sink present in water surface so z co-ordinate is 0.
+%Sink node position --CAN BE CHANGED
 sink(1,1)=500 ;
-sink(1,2) = 500;
-sink(1,3) = 1000;
+sink(1,2)=500 ;
+sink(1,3)=1000 ;
 
-n=1;
+% Flag to ensure that at the end of deployment/redeployment, NO VOID NODES
+% ARE EXIST-- DON'T CHANGE
+flag=1;
 
-% Min range of x,y,z
-min_x=0;
-min_y=0;
-min_z=0;
+% Distance between neighbours of a node to sink --Used in finding void
+% nodes
+neighbour_to_sink_dis= zeros(numNodes,numNodes);
 
-% Min range of x,y,z
+%Total void nodes, After complete deployment
+void_count=0;
+
+% distance between node to sink & min. distance between a neighbour to sink
+dst=zeros(numNodes,2);
+
+%List contains, void nodes
+voids=[];
+indx=1;
+
+%Communication Range of sesor nodes
+accRange=250;
+% 3-D positions of node
+nodePositions= zeros(numNodes,3);
+
+% Node deployment area
 max_x=1000;
 max_y=1000;
 max_z=1000;
 
-root= nthroot(numNodes,3);
-x= floor(root);
-y= floor(root);
-z= floor(root);
-
-m=x*y*z;
-
-x_segment=max_x/x;
-y_segment=max_y/y;
-z_segment=max_z/z;
-
-
-nodePositions= zeros(m,3);
-
-for i=0 :x_segment: (max_x-1)
-      for j=0 :y_segment: (max_y-1)
-        for k=0:z_segment: (max_z-1)                  
-             nodePositions(n,1) = (rand) * (x_segment)+i
-             nodePositions(n,2) = (rand) * (y_segment)+j
-             nodePositions(n,3) = (rand) * (z_segment)+k
-             n= n+1;
-          
-         end
-      end         
+%Initial deployment
+for i=1:numNodes
+    nodePositions(i,1)= rand * max_x;
+    nodePositions(i,2)= rand * max_y;
+    nodePositions(i,3)= rand * max_z;
 end
   
 % Plot the nodes and sink in 3-D
-
 plot3(nodePositions(:, 1), nodePositions(:, 2),nodePositions(:, 3), '+', ...
     'MarkerSize',15);
 hold on
 plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
 
+%List of neighbours for a node
 neighbour=zeros(numNodes,numNodes);
-void_nodes=  zeros(numNodes);
+void_nodes=  zeros(numNodes,1);
 
  for i=1:numNodes
        
- [neighbour, neighbour_to_sink_dis, void_nodes, void_count, dst ]= find_void(i,sink,numNodes,nodePositions,...
-     accRange, neighbour, void_nodes,neighbour_to_sink_dis, void_count, dst);
+ [neighbour, neighbour_to_sink_dis, void_nodes,  dst ]= find_void(i,sink,numNodes,nodePositions,...
+     accRange, neighbour, void_nodes,neighbour_to_sink_dis, dst);
      
  end
- void(t,2)= void_count;
- void(t,3)=void(t,2)/void(t,1);
-end
+ 
+ % Put void nodes in a list  and Count total void nodes after initial
+ % deployment
 
-figure;
-t=1:1:10;
-plot(void(t,1),void(t,3),'m');
-grid on;
-xlabel('Number of nodes')
-ylabel('Fraction of void nodes')   
-
-
-
-    
+ for i=1:numNodes
+     if(void_nodes(i,1)==1)
+     void_count= void_count +1;
+     voids(indx)=i;
+     indx = indx +1;
+     end
+ end
+ 
+ % Code for De-deployment of void nodes  
+while (flag == 1)
+    for i=1:void_count     
+        while (void_nodes(voids(i),1)==1)
+            nodePositions(voids(i),1)= rand * max_x;
+            nodePositions(voids(i),2)= rand * max_y;
+            nodePositions(voids(i),3)= rand * max_z;
+            [neighbour, neighbour_to_sink_dis, void_nodes, dst ]= find_void(voids(i),sink,numNodes,nodePositions,...
+            accRange, neighbour, void_nodes,neighbour_to_sink_dis, dst);
+        end % End of while 
+    end % End of for 
+ 
+    void_count=0;
+    voids = [];
+    indx=1;
+    % check for all nodes whether void or not, after redeployment
+    for i=1:numNodes
+        [neighbour, neighbour_to_sink_dis, void_nodes,  dst ]= find_void(i,sink,numNodes,nodePositions,...
+        accRange, neighbour, void_nodes,neighbour_to_sink_dis, dst);
+    end % End of for 
+ 
+    for i=1:numNodes
+        if(void_nodes(i,1)==1)
+        void_count= void_count +1;
+        voids(indx)=i;
+        indx = indx +1;
+        end % End of if
+    end %End of for
+ 
+    if ( void_count > 0)
+        flag=1;
+    else
+        flag=0;
+    end % End of if
+   
+end % End of while 
+ 
+     
     
 % Untill reach destination
 %while ( succ(i) == 0)

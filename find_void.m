@@ -1,6 +1,8 @@
-function [neighbour, neighbour_to_sink_dis, void_nodes, void_count , dst] = find_void(node,sink,...
-    numNodes,nodePositions,accRange,neighbour, void_nodes, neighbour_to_sink_dis, void_count,dst)
+function [neighbour, neighbour_to_sink_dis, void_nodes, dst] = find_void(node,sink,...
+    numNodes,nodePositions,accRange,neighbour, void_nodes, neighbour_to_sink_dis, dst)
 index =1;
+% dst_sink : distance between node to sink
+% distance : distance between  node and surrounding nodes
 
  % Copy x/y/z co-ordinates of forwarding node
  node_x=nodePositions(node,1); 
@@ -56,7 +58,10 @@ index =1;
        
      if (( dst_sink < min_neighbour_sink) && (dst_sink > accRange))
              void_nodes(node,1)=1;
-             void_count = void_count+1;
+     else
+         void_nodes(node,1)=0;
+            % void_count = void_count+1;
+             
      end
     
     

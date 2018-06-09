@@ -3,12 +3,12 @@ clear all;
 close all;
 
 %Number of nodes---CAN BE CHANGED
-numNodes= 100;
+numNodes= 120;
 
 %Sink node position --CAN BE CHANGED
 sink(1,1)=500 ;
 sink(1,2)=500 ;
-sink(1,3)=1000 ;
+sink(1,3)=0 ;
 
 % Flag to ensure that at the end of deployment/redeployment, NO VOID NODES
 % ARE EXIST-- DON'T CHANGE
@@ -36,7 +36,7 @@ nodePositions= zeros(numNodes,3);
 % Node deployment area
 max_x=1000;
 max_y=1000;
-max_z=1000;
+max_z=-1000;
 
 %Initial deployment
 for i=1:numNodes
@@ -45,12 +45,6 @@ for i=1:numNodes
     nodePositions(i,3)= rand * max_z;
 end
   
-% Plot the nodes and sink in 3-D
-plot3(nodePositions(:, 1), nodePositions(:, 2),nodePositions(:, 3), '+', ...
-    'MarkerSize',15);
-hold on
-plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
-
 %List of neighbours for a node
 neighbour=zeros(numNodes,numNodes);
 void_nodes=  zeros(numNodes,1);
@@ -72,7 +66,7 @@ void_nodes=  zeros(numNodes,1);
      indx = indx +1;
      end
  end
- 
+ attempt=0;
  % Code for De-deployment of void nodes  
 while (flag == 1)
     for i=1:void_count     
@@ -84,7 +78,7 @@ while (flag == 1)
             accRange, neighbour, void_nodes,neighbour_to_sink_dis, dst);
         end % End of while 
     end % End of for 
- 
+   
     void_count=0;
     voids = [];
     indx=1;
@@ -109,6 +103,16 @@ while (flag == 1)
     end % End of if
    
 end % End of while 
+% Plot the nodes and sink in 3-D
+plot3(nodePositions(:, 1), nodePositions(:, 2),nodePositions(:, 3), '+', ...
+    'MarkerSize',15);
+hold on
+plot3(sink(1, 1), sink(1, 2),sink(1, 3), 'S', 'MarkerFaceColor', 'g');
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%Packet Forwarding using greedy forwarding%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
      
     
